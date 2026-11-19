@@ -1,17 +1,20 @@
 export function getReleaseName(name: string): string {
-  const linuxRegex = /linux|Linux|Ubuntu/i;
-  const windowsRegex = /windows|Windows/i;
-  const macRegex = /mac|Mac|darwin/i;
-  const extensionRegex = /\.(zip|tar\.gz|dmg|exe)$/i;
-  const extName = name.split(extensionRegex)[0]; // Remove the extension from the name
+  const extension = name.match(/\.(zip|tar\.gz|dmg|exe)$/i)?.[0] ?? "";
+  return `API-Caffeine-${getReleasePlatform(name)}${extension}`;
+}
+
+export function getReleasePlatform(name: string) {
+  const linuxRegex = /linux|ubuntu/i;
+  const windowsRegex = /windows/i;
+  const macRegex = /mac|darwin/i;
   switch (true) {
     case linuxRegex.test(name):
-      return "API-Caffeine-Linux";
+      return "Linux";
     case windowsRegex.test(name):
-      return "API-Caffeine-Windows";
+      return "Windows";
     case macRegex.test(name):
-      return "API-Caffeine-Mac";
+      return "Mac";
     default:
-      return "API-Caffeine-Unknown";
+      return "Unknown";
   }
 }

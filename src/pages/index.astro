@@ -9,8 +9,7 @@ try {
 	release = await getLatestRelease() 
 }catch (error) {
 	console.error("Error fetching latest release:", error);
-}
-console.log('release: ',release);
+} 
 const releaseVersion = release?.tag_name ?? fallbackReleaseVersion;
 ---
 
@@ -54,7 +53,9 @@ const releaseVersion = release?.tag_name ?? fallbackReleaseVersion;
 					<div class="hero-intro">
 						<h1 id="hero-title">Send a request. <span>See what comes back.</span></h1>
 						<p>Build HTTP requests, inspect responses, and keep your endpoints organized in one desktop app.</p>
-						<PlatformDownloads releaseAssets={release?.assets || []} />
+						<div style="margin-inline: auto;">
+							<PlatformDownloads releaseAssets={release?.assets || []}  />
+						</div>
 					</div>
 					<figure class="hero-example">
 						<div class="app-window">

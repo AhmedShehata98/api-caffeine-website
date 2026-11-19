@@ -1,0 +1,26 @@
+---
+import type { ReleaseAsset } from '../services/github';
+
+interface Props {
+	releaseAssets: ReleaseAsset[] | [];
+	showDetails?: boolean;
+}
+
+const { releaseAssets , showDetails = false } = Astro.props;  
+---
+
+<ul class="platform-bar" aria-label={showDetails ? "Desktop download archives" : "Download for desktop"}>
+	{releaseAssets && releaseAssets.map(({ name,browser_download_url, label }) => (
+		<li>
+			<a href={browser_download_url} class:list={["platform", { "platform-full": showDetails }]} aria-label={name} title={label ?? name}>
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+					<path d={name} />
+				</svg>
+				<span><strong>{name}</strong>{showDetails && <small>{name}</small>}</span>
+				<svg class="platform-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M12 3v12m-4-4 4 4 4-4M5 20h14" />
+				</svg>
+			</a>
+		</li>
+	))}
+</ul>

@@ -1,16 +1,223 @@
 ---
+import PlatformDownloads from "../components/PlatformDownloads.astro";
+import { releaseVersion as fallbackReleaseVersion } from "../data/release";
+import { getLatestRelease, type GitHubRelease } from "../services/github";
+import "../styles/landing.css";
+
+let release : GitHubRelease | null = null;
+try {
+	release = await getLatestRelease() 
+}catch (error) {
+	console.error("Error fetching latest release:", error);
+}
+console.log('release: ',release);
+const releaseVersion = release?.tag_name ?? fallbackReleaseVersion;
 ---
 
 <html lang="en">
 	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Build HTTP requests, inspect responses, and organize endpoints with API Caffeine, a desktop API client.">
+		<link rel="icon" type="image/png" href="/api-caffeine.png">
+		<meta name="generator" content={Astro.generator}>
+		<title>API Caffeine — Desktop API Client</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<header class="header top">
+			<div class="shell header-inner">
+				<a class="brand" href="#hero">
+					<span class="brand-mark"><img src="/api-caffeine.png" alt="" width="26" height="26" /></span>
+					API Caffeine
+				</a>
+				<nav aria-label="Main navigation">
+					<a href="#features">Features</a>
+					<a class="button" href="#downloads">
+						Download
+						<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+							<path d="M12 3v12m-4-4 4 4 4-4M5 20h14" />
+						</svg>
+					</a>
+				</nav>
+			</div>
+		</header>
+		<main aria-label="API Caffeine">
+			<div class="top hero-top">
+				<section class="hero shell" id="hero" aria-labelledby="hero-title">
+					<div class="hero-intro">
+						<h1 id="hero-title">Send a request. <span>See what comes back.</span></h1>
+						<p>Build HTTP requests, inspect responses, and keep your endpoints organized in one desktop app.</p>
+						<PlatformDownloads releaseAssets={release?.assets || []} />
+					</div>
+					<figure class="hero-example">
+						<div class="app-window">
+							<div class="app-title"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>Catalog API</span><span class="app-title-context">API Caffeine</span>
+							</div>
+							<div class="app-body">
+								<aside class="app-sidebar" aria-label="Example collection">
+									<strong>Collections</strong>
+									<span class="app-collection">
+									<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Catalog API</span>
+									<div class="app-endpoint is-selected"><b class="get">GET</b> List products</div>
+									<div class="app-endpoint"><b class="post">POST</b> Create product</div>
+								</aside>
+								<div class="app-workspace">
+									<div class="app-request-bar">
+										<div class="app-url"><b class="get">GET</b><code><em>{'{{baseUrl}}'}</em>/v1/products</code>
+										</div>
+										<span class="app-send">Send <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>
+									</div>
+									<div class="app-panes">
+										<div class="app-request">
+											<div class="app-pane-head"><strong>Request</strong><span>Query params</span>
+											</div>
+											<table>
+												<thead>
+													<tr><th scope="col">Key</th><th scope="col">Value</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr><td>limit</td><td>10</td>
+													</tr>
+													<tr><td>in_stock</td><td>true</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+										<div class="app-response">
+											<div class="app-pane-head"><strong>Response</strong><span class="get">200 OK</span>
+											</div>
+											<pre><code>&#123;
+  <span class="json-key">"items"</span>: [
+    &#123;
+      <span class="json-key">"id"</span>: 101,
+      <span class="json-key">"name"</span>: <em>"Espresso"</em>,
+      <span class="json-key">"in_stock"</span>: <span class="get">true</span>
+    &#125;
+  ]
+&#125;</code></pre>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="peek peek-env">
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5zm-9 9 9 5 9-5M3 16l9 5 9-5"/></svg><span><strong>Development</strong><small>{'{{baseUrl}}'}</small></span>
+						</div>
+						<div class="peek peek-result">
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 12 2 2 4-4m2 4h2"/></svg><span><strong>200 OK</strong><small>84 ms · 1.2 KB</small></span>
+						</div>
+						<figcaption>Example request and response</figcaption>
+					</figure>
+				</section>
+			</div>
+			<section class="features shell" id="features" aria-labelledby="features-title">
+				<div class="feature-intro">
+					<div class="feature-head">
+						<h2 id="features-title">Tools for everyday API work</h2>
+						<p>Build and inspect requests side by side. Save the ones you’ll come back to.</p>
+					</div>
+					<ul class="feature-strip">
+						<li>
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h6m4 0h6M4 12h2m4 0h10M4 18h10m4 0h2"/><circle cx="12" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="18" r="2"/></svg>
+							<h3>Request builder</h3>
+							<p>Set query parameters, headers, authentication, and JSON bodies.</p>
+						</li>
+						<li>
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 12 2 2 4-4m2 4h2"/></svg>
+							<h3>Response viewer</h3>
+							<p>Check status, timing, and headers. Search the formatted response.</p>
+						</li>
+						<li>
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+							<h3>Collections</h3>
+							<p>Group related endpoints and reopen saved requests when you need them.</p>
+						</li>
+						<li>
+							<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<rect x="4" y="4" width="16" height="16" rx="2" />
+								<rect x="9" y="9" width="6" height="6" />
+								<path d="M9 1v3m6-3v3M9 20v3m6-3v3m5-14h3m-3 5h3M1 9h3m-3 5h3" />
+							</svg>
+							<h3>MCP Lab</h3>
+							<p>Interactive developer tooling for testing and debugging MCP servers.</p>
+						</li>
+					</ul>
+				</div>
+				<div class="feature-demos">
+					<article class="feature-card">
+						<div>
+							<h3>Environments</h3>
+							<p>Reuse variables to switch between local and staging without editing the request.</p>
+						</div>
+						<div class="mini-demo"><code>{'{{baseUrl}}'}</code><span>Development / Staging</span>
+						</div>
+					</article>
+					<article class="feature-card">
+						<div>
+							<h3>Keyboard shortcuts</h3>
+							<p>Send the current request or search its response from the keyboard.</p>
+						</div>
+						<div class="mini-demo"><kbd>Ctrl+Enter</kbd><span>Send</span><kbd>Ctrl+F</kbd><span>Search</span>
+						</div>
+					</article>
+					<article class="feature-card import-card">
+						<div>
+							<h3>Bring your existing requests</h3>
+							<p>Paste a cURL command or import a Postman v2.1 collection.</p>
+						</div>
+						<div class="terminal">
+							<div><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>cURL example</div>
+							<code><b aria-hidden="true">$</b> curl https://api.example.com/v1/products</code>
+						</div>
+					</article>
+				</div>
+			</section>
+			<section class="download shell" id="downloads" aria-labelledby="download-title">
+				<div class="banner">
+					<div>
+						<h2 id="download-title">Download API Caffeine</h2>
+						<p class="download-copy">Desktop release · {release?.tag_name}</p>
+						<PlatformDownloads releaseAssets={release?.assets || []} showDetails />
+					</div>
+					<div class="banner-art" aria-hidden="true">
+						<div class="app-window">
+							<div class="app-title"><span class="window-dots"><i></i><i></i><i></i></span><span>Catalog API</span>
+							</div>
+							<div class="app-body">
+								<div class="app-workspace">
+									<div class="app-request-bar">
+										<div class="app-url"><b class="get">GET</b><code><em>{'{{baseUrl}}'}</em>/v1/products</code>
+										</div>
+										<span class="app-send">Send <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5"/></svg></span>
+									</div>
+									<div class="app-panes">
+										<div class="app-request">
+											<div class="app-pane-head"><strong>Request</strong>
+											</div>
+											<table>
+												<tr><td>limit</td><td>10</td>
+												</tr>
+											</table>
+										</div>
+										<div class="app-response">
+											<div class="app-pane-head"><strong>Response</strong><span class="get">200 OK</span>
+											</div>
+											<pre><code>&#123;
+  <span class="json-key">"name"</span>: <em>"Espresso"</em>,
+  <span class="json-key">"in_stock"</span>: <span class="get">true</span>
+&#125;</code></pre>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
 	</body>
 </html>
